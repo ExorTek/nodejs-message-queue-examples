@@ -1,0 +1,12 @@
+{
+  "name": "rabbitmq-example",
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.1"
+  },
+  "scripts": {
+    "rabbitmq": "nodemon rabbitmq.js"
+  },
+  "packageManager": "yarn@4.1.1"
+}
