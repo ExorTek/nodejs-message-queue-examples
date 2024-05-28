@@ -1,18 +1,33 @@
 {
-  "name": "rabbitmq-example",
+  "name": "message-queue-examples",
+  "version": "1.0.0",
+  "description": "Examples of using message queues in Node.js",
+  "author": {
+    "name": "ExorTek",
+    "url": "https://github.com/ExorTek/nodejs-message-queue-examples"
+  },
+  "keywords": [
+    "message-queue",
+    "rabbitmq",
+    "kafka",
+    "sqs",
+    "redis",
+    "nodejs"
+  ],
+  "scripts": {
+    "start:rabbitmq": "node --watch rabbitmq/app.js",
+    "start:kafka": "node --watch apache-kafka/app.js",
+    "start:sqs": "node --watch aws-sqs/app.js",
+    "start:redis": "node --watch redis/app.js"
+  },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.583.0",
     "amqplib": "^0.10.4",
-    "express": "^4.19.2",
     "kafkajs": "^2.2.4",
-    "nodemon": "^3.1.1",
     "redis": "^4.6.14"
   },
-  "scripts": {
-    "rabbitmq": "nodemon rabbitmq/app.js",
-    "kafka": "nodemon apache-kafka/app.js",
-    "sqs": "nodemon aws-sqs/app.js",
-    "redis": "nodemon redis/app.js"
+  "engines": {
+    "node": ">=20.13.1"
   },
   "packageManager": "yarn@4.1.1"
 }
