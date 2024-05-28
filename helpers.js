@@ -1,7 +1,5 @@
-
-const pause = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
+const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 module.exports = {
-    pause
-}
+  pause,
+};

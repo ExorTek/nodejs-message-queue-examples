@@ -15,37 +15,37 @@ Follow these steps to run the examples:
 2. **Install the dependencies:**
    ```bash
     npm install
-    ```
+   ```
    OR
-    ```bash
-     yarn install
-     ```
+   ```bash
+    yarn install
+   ```
 3. **Run the examples:**
-    ```bash
-    npm run start:rabbitmq
-    ```
-    ```bash
-    npm run start:kafka
-    ```
-    ```bash
-    npm run start:sqs
-    ```
-    ```bash
-    npm run start:redis
-    ```
+   ```bash
+   npm run start:rabbitmq
+   ```
+   ```bash
+   npm run start:kafka
+   ```
+   ```bash
+   npm run start:sqs
+   ```
+   ```bash
+   npm run start:redis
+   ```
    OR
-    ```bash
-    yarn start:rabbitmq
-    ```
-    ```bash
-    yarn start:kafka
-    ```
-    ```bash
-    yarn start:sqs
-    ```
-    ```bash
-    yarn start:redis
-    ```
+   ```bash
+   yarn start:rabbitmq
+   ```
+   ```bash
+   yarn start:kafka
+   ```
+   ```bash
+   yarn start:sqs
+   ```
+   ```bash
+   yarn start:redis
+   ```
 
 ### Using Docker Compose
 
@@ -58,7 +58,7 @@ Follow these steps to run the examples:
 2. Start the RabbitMQ container:
    ```bash
     docker-compose up
-    ```
+   ```
 
 #### Apache Kafka
 
@@ -69,7 +69,7 @@ Follow these steps to run the examples:
 2. Start the Apache Kafka container:
    ```bash
     docker-compose up
-    ```
+   ```
 
 #### Redis
 
@@ -80,22 +80,28 @@ Follow these steps to run the examples:
 2. Start the Redis container:
    ```bash
     docker-compose up
-    ```
+   ```
 
 ### AWS SQS Setup
+
 For AWS SQS, ensure that you have your AWS credentials configured. You can use the AWS CLI to configure your credentials:
+
 ```bash
 aws configure
 ```
+
 The `aws configure` command will prompt you to enter your AWS Access Key ID, Secret Access Key, region, and output format. Make sure to use the same region where your SQS queue is located.
 
 ### Creating the SQS Queue
+
 To create an SQS queue, you can use the AWS Management Console or the AWS CLI. For example, to create a FIFO queue using the AWS CLI, run:
+
 ```bash
 aws sqs create-queue --queue-name orderQueue.fifo --attributes FifoQueue=true
 ```
 
 ### Notes
+
 - Ensure that you have Docker and Docker Compose installed on your machine to use the Docker setup.
 - The examples assume that you have the necessary permissions and resources configured for each message broker.
 - If you encounter any issues, please check the respective message broker's documentation or raise an issue in this repository.
