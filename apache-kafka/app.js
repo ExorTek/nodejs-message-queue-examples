@@ -1,67 +1,56 @@
-const express = require('express');
-const app = express();
-const {
-    Kafka
-} = require('kafkajs');
-
-const config = {
-    groupId: 'my-group',
-    topic: 'test-topic',
-    brokers: ['localhost:9092'],
-    clientId: 'my-app'
-}
+const {Kafka} = require('kafkajs');
+const orders = require('../orders');
+const {pause} = require('../helpers');
 
 const kafka = new Kafka({
-    clientId: config.clientId,
-    brokers: config.brokers
+    clientId: 'order-app',
+    brokers: ['localhost:9092']
 });
 
 const producer = kafka.producer();
+const consumer = kafka.consumer({groupId: 'order-group'});
 
-const consumer = kafka.consumer({
-    groupId: config.groupId
-});
+const topic = 'orderTopic';
 
-const run = async () => {
-    await producer.connect().then(() => {
-        console.log('Producer connected');
-    });
-    await consumer.connect().then(() => {
-        console.log('Consumer connected');
-    });
-    await consumer.subscribe({
-        topic: config.topic,
-        fromBeginning: true
-    }).then(() => {
-        console.log('Consumer subscribed');
-    });
+(async () => {
+    await producer.connect();
+    console.info('Producer connected successfully!');
 
+    await consumer.connect();
+    console.info('Consumer connected successfully!');
+
+    await consumer.subscribe({topic, fromBeginning: true});
+    console.info(`Subscribed to ${topic}`);
+    await createOrders();
+
+    await processOrders();
+})();
+
+const createOrders = async () => {
+    for (const order of orders) {
+        console.log(` [x] ${order.product} order received from ${order.customer}`);
+        await producer.send({
+            topic: topic,
+            messages: [{value: JSON.stringify(order)}],
+        });
+        await pause(1000);
+    }
+};
+
+const processOrders = async () => {
     await consumer.run({
-        eachMessage: async ({
-                                topic,
-                                partition,
-                                message
-                            }) => {
-            console.log(' [x] Received message: ', message.value.toString());
-        },
+        eachMessage: async ({topic, partition, message}) => {
+            const parsedOrder = JSON.parse(message.value.toString());
+            console.log(` [x] The order was completed and delivered to ${parsedOrder.customer}`);
+            await pause(3000);
+        }
+    }).then(async () => {
+        await producer.disconnect();
+        await consumer.disconnect();
+        console.info('Kafka connection closed, all tasks completed.');
+        process.exit(0);
+    }).catch(err => {
+        console.error('Error processing orders', err);
+        process.exit(1);
     });
-}
-
-run()
-
-app.get('/send', async (req, res) => {
-    const message = 'Hello Apache Kafka! This is a message from the sender!';
-    await producer.send({
-        topic: config.topic,
-        messages: [{
-            value: message
-        }],
-    });
-    console.log(' [x] Sent message: ', message);
-    res.send('Message sent');
-});
-
-
-app.listen(5001, () => {
-    console.info(`Server started http://localhost:5001`)
-});
+};
