@@ -1,8 +1,8 @@
-const express = require('express');
-const app = express();
 const redis = require('redis');
+const orders = require('../orders');
+const {pause} = require('../helpers')
 
-const queueName = 'redisQueue';
+const queueName = 'orderQueue';
 
 const redisClient = redis.createClient();
 
@@ -10,32 +10,37 @@ redisClient.on('error', (err) => {
     console.error('Redis Client Error', err);
 });
 
-redisClient.connect().then(() => {
-    console.log('Redis connected');
-}).catch((err) => {
+(async () => {
+    await redisClient.connect();
+    console.info('Redis connected successfully!');
+    await createOrders();
+    await processOrders();
+    await redisClient.quit();
+    process.exit(0);
+})().catch((err) => {
     console.error('Redis connection error', err);
-
+    redisClient.quit();
+    process.exit(1);
 });
 
-
-app.get('/send', async (req, res) => {
-    const message = 'Hello Redis! This is a message from the sender!';
-    await redisClient.rPush(queueName, message);
-    console.log(' [x] Sent message: ', message);
-    res.send('Message sent')
-});
-
-app.get('/receive', async (req, res) => {
-    const message = await redisClient.lPop(queueName);
-    if (message) {
-        console.log(' [x] Received message: ', message);
-        res.send('Message received');
-    } else {
-        console.log('No messages available');
-        res.send('No messages available');
+const createOrders = async () => {
+    for (const order of orders) {
+        console.log(` [x] ${order.product} order received from ${order.customer}`);
+        await redisClient.rPush(queueName, JSON.stringify(order));
+        await pause(1000);
     }
-});
+};
 
-app.listen(5001, () => {
-    console.info(`Server started http://localhost:5001`)
-});
+const processOrders = async () => {
+    while (true) {
+        const order = await redisClient.lPop(queueName);
+        if (order) {
+            const parsedOrder = JSON.parse(order);
+            console.log(` [x] The order was completed and delivered to ${parsedOrder.customer}`);
+            await pause(3000);
+        } else {
+            console.log('No orders left');
+            break;
+        }
+    }
+};
