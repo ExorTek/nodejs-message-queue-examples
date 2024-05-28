@@ -95,7 +95,7 @@ To create an SQS queue, you can use the AWS Management Console or the AWS CLI. F
 aws sqs create-queue --queue-name orderQueue.fifo --attributes FifoQueue=true
 ```
 
-### Noes
+### Notes
 - Ensure that you have Docker and Docker Compose installed on your machine to use the Docker setup.
 - The examples assume that you have the necessary permissions and resources configured for each message broker.
 - If you encounter any issues, please check the respective message broker's documentation or raise an issue in this repository.
