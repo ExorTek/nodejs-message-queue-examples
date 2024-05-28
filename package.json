@@ -18,7 +18,8 @@
     "start:rabbitmq": "node --watch rabbitmq/app.js",
     "start:kafka": "node --watch apache-kafka/app.js",
     "start:sqs": "node --watch aws-sqs/app.js",
-    "start:redis": "node --watch redis/app.js"
+    "start:redis": "node --watch redis/app.js",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.583.0",
@@ -29,5 +30,8 @@
   "engines": {
     "node": ">=20.13.1"
   },
-  "packageManager": "yarn@4.1.1"
+  "packageManager": "yarn@4.1.1",
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  }
 }
